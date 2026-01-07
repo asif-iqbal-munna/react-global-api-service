@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { apiClient } from "../api/apiClient";
+
+import { apiClient } from "../api/client/apiClient";
 
 export async function queryFetcher<T>({
   url,

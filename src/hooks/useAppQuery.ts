@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { queryFetcher } from "../service/query/queryFetcher";
-import { queryKeyFactory } from "../service/query/queryKeyFactory";
+import { normalizeFilters } from "../service/query/normalizeFilters";
 
 export function useAppQuery<T>({
   key,
@@ -18,7 +18,7 @@ export function useAppQuery<T>({
   staleTime?: number;
 }) {
   return useQuery<T>({
-    queryKey: queryKeyFactory.list(key, filters),
+    queryKey: [key, normalizeFilters(filters)],
     queryFn: ({ signal }) => queryFetcher<T>({ url, filters, signal }),
     enabled,
     staleTime,

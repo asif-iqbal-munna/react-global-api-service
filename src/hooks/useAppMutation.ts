@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "../service/api/apiClient";
+import { apiClient } from "../service/api/client/apiClient";
 
 export function useAppMutation<TData, TVariables>({
   url,

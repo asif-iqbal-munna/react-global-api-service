@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { axiosInstance } from "./axiosInstance";
+
+import { axiosInstance } from "../axiosInstance";
 
 export async function apiClient<T>(
   url: string,
