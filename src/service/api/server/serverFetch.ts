@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import dayjs from "dayjs";
-export type ServerFetchOptions = {
-  url: string;
-  cache?: "force-cache" | "no-store" | "default";
-  revalidate?: number;
-  tags?: string[];
-  params?: Record<string, any>;
-};
+import { generateIdempotencyKey } from "../apiUtils";
+import { ServerFetchOptions } from "../../../type/general.types";
 
 export async function serverFetch<T = unknown>({
   url,
@@ -16,15 +11,25 @@ export async function serverFetch<T = unknown>({
   params,
   method = "GET",
   body,
-}: ServerFetchOptions & { method?: string; body?: any }): Promise<T | null> {
+}: ServerFetchOptions): Promise<T | null> {
   const query = params
     ? "?" + new URLSearchParams(params as Record<string, string>).toString()
     : "";
   const endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${url}${query}`;
 
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
+    const idempotencyKey = generateIdempotencyKey()
+    headers["idempotency-key"] = idempotencyKey;
+  }
+
   const fetchOptions: RequestInit & { next?: any } = {
     method,
-    headers: { "Content-Type": "application/json" },
+    headers,
   };
 
   if (body) fetchOptions.body = JSON.stringify(body);
@@ -67,6 +72,6 @@ export async function serverFetch<T = unknown>({
       }`
     );
 
-    return null;
+    throw error;
   }
 }
