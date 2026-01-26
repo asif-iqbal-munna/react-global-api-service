@@ -7,4 +7,5 @@ export type ServerFetchOptions = {
   params?: Record<string, any>;
   method?: string,
   body?: any,
+  idempotencyKey?: string
 };

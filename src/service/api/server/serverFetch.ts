@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import dayjs from "dayjs";
-import { generateIdempotencyKey } from "../apiUtils";
 import { ServerFetchOptions } from "../../../type/general.types";
 
 export async function serverFetch<T = unknown>({
@@ -11,6 +10,7 @@ export async function serverFetch<T = unknown>({
   params,
   method = "GET",
   body,
+  idempotencyKey
 }: ServerFetchOptions): Promise<T | null> {
   const query = params
     ? "?" + new URLSearchParams(params as Record<string, string>).toString()
@@ -21,9 +21,7 @@ export async function serverFetch<T = unknown>({
     "Content-Type": "application/json",
   };
 
-  
-  if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
-    const idempotencyKey = generateIdempotencyKey()
+  if (idempotencyKey && ["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
     headers["idempotency-key"] = idempotencyKey;
   }
 
